@@ -1,6 +1,6 @@
 # Machine Failure Prediction — Precursor Project
 
-> **Nota:** Este repositório é um projeto independente desenvolvido por **Silas Luiz Bom Fim** como trabalho exploratório de predição de falhas em máquinas industriais. Posteriormente, parte desse tema foi retomado em um estudo acadêmico coletivo e publicado como artigo científico — mas os dois são trabalhos distintos, com metodologias e resultados diferentes. Veja a seção [Relação com o artigo publicado](#relação-com-o-artigo-publicado) para detalhes.
+> **Este projeto é o precursor direto de um artigo científico publicado.** Desenvolvido individualmente por **Silas Luiz Bom Fim** como exploração independente do tema, ele serviu de base para uma pesquisa acadêmica coletiva que resultou em publicação revisada por pares — mas os dois trabalhos têm autores, metodologias e resultados diferentes. Veja a seção [Relação com o artigo publicado](#relação-com-o-artigo-publicado) para entender as diferenças.
 
 ---
 
@@ -92,22 +92,23 @@ pip install pandas numpy matplotlib seaborn scikit-learn imbalanced-learn
 
 ## Relação com o artigo publicado
 
-Em 2025, um grupo de pesquisadores da **UFABC** publicou um artigo sobre tema relacionado:
+Este projeto é o **ponto de partida** de uma pesquisa acadêmica que culminou em publicação científica. A exploração feita aqui — pipeline de pré-processamento, comparação de modelos, análise de falhas — foi o trabalho inicial que embasou o estudo coletivo conduzido posteriormente na **UFABC**.
+
+O artigo resultante:
 
 > Araujo, S. A., Bomfim, S. L., et al. *Integration of Data Analytics and Data Mining for Machine Failure Mitigation and Decision Support in Metal–Mechanical Industry.* **Logistics**, Vol. 9, n. 3, Art. 109, MDPI, 2025.
 > 🔗 [doi.org/10.3390/logistics9030109](https://doi.org/10.3390/logistics9030109)
 
-**Este repositório não é o código do artigo.** São trabalhos distintos:
+Apesar da origem comum, **este repositório não é o código do artigo**. A pesquisa formal seguiu um protocolo diferente, com mais autores e escolhas metodológicas distintas:
 
 | | Este repositório | Artigo publicado |
 |---|---|---|
 | **Autoria** | Silas Luiz Bom Fim (individual) | 6 autores (coletivo) |
-| **Natureza** | Projeto exploratório independente | Pesquisa acadêmica revisada por pares |
+| **Natureza** | Exploração independente — precursor | Pesquisa acadêmica revisada por pares |
 | **Melhor modelo** | Random Forest (97.54%) | Decision Tree (82.1%) |
-| **Metodologia** | Exploração livre, iterativa | Protocolo formal de pesquisa |
-| **Relação** | Precursor, tema semelhante | Trabalho relacionado |
+| **Metodologia** | Iterativa, exploratória | Protocolo formal de pesquisa |
 
-Contribuí como co-autor no artigo (implementação Python e visualizações), mas o código neste repositório foi desenvolvido de forma independente, com escolhas metodológicas diferentes.
+Contribuí no artigo como co-autor (implementação Python e visualizações), mas o código deste repositório foi desenvolvido de forma independente, antes e com diferenças em relação ao trabalho final publicado.
 
 ---
 
