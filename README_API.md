@@ -1,5 +1,9 @@
 # Machine Failure Prediction API
 
+[![API Status](https://img.shields.io/badge/API-Online-green)](https://machine-failure-prediction-production.up.railway.app)
+
+**Live API:** https://machine-failure-prediction-production.up.railway.app/docs
+
 API REST para predição de falhas em máquinas industriais, construída com **FastAPI** e **Random Forest**.
 
 ---
