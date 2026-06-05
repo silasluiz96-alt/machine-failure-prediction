@@ -1,12 +1,12 @@
 """
 API de predição de falhas em máquinas industriais.
 
-Iniciar:
+Iniciar localmente:
     uvicorn api.main:app --reload
     (execute a partir da pasta MachineFailure/)
 
-Antes de iniciar, treine o modelo:
-    python api/model.py
+O modelo é treinado automaticamente na primeira inicialização se os
+arquivos .pkl não existirem — basta o CSV estar presente.
 """
 
 from contextlib import asynccontextmanager
@@ -23,7 +23,7 @@ from api.schemas import (
     ModelInfo,
     PredictionOutput,
 )
-from api.model import load_artifacts, prepare_input, FEATURES
+from api.model import load_artifacts, prepare_input, train_and_save, MODEL_PATH, FEATURES
 
 # Estado global da aplicação
 _model = None
@@ -38,12 +38,11 @@ def _get_artifacts():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global _model, _scaler, _meta
-    try:
-        _model, _scaler, _meta = load_artifacts()
-        print("✓ Modelo carregado com sucesso.")
-    except FileNotFoundError as e:
-        print(f"⚠️  {e}")
-        print("    Execute 'python api/model.py' para treinar o modelo antes de iniciar a API.")
+    if not MODEL_PATH.exists():
+        print("⚙️  Modelo não encontrado — iniciando treinamento automático...")
+        train_and_save()
+    _model, _scaler, _meta = load_artifacts()
+    print("✓ Modelo carregado com sucesso.")
     yield
 
 
