@@ -7,6 +7,8 @@ RUN pip install --no-cache-dir -r requirements_api.txt
 
 COPY . .
 
-ENV PORT=8000
+RUN python api/model.py
 
-CMD ["python", "-c", "import os; import subprocess; port = os.environ.get('PORT', '8000'); subprocess.run(['uvicorn', 'api.main:app', '--host', '0.0.0.0', '--port', port])"]
+EXPOSE 8000
+
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
