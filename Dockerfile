@@ -9,4 +9,4 @@ COPY . .
 
 ENV PORT=8000
 
-CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["python", "-c", "import os; import subprocess; port = os.environ.get('PORT', '8000'); subprocess.run(['uvicorn', 'api.main:app', '--host', '0.0.0.0', '--port', port])"]
