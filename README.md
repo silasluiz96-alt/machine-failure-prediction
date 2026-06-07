@@ -4,7 +4,6 @@
 
 **Live API:** https://machine-failure-prediction-production.up.railway.app/docs
 
----
 
 > **Este projeto é o precursor direto de um artigo científico publicado.** Desenvolvido individualmente por **Silas Luiz Bom Fim** como exploração independente do tema, ele serviu de base para uma pesquisa acadêmica coletiva que resultou em publicação revisada por pares — mas os dois trabalhos têm autores, metodologias e resultados diferentes. Veja a seção [Relação com o artigo publicado](#relação-com-o-artigo-publicado) para entender as diferenças.
 
@@ -14,15 +13,17 @@
 
 Pipeline de Machine Learning para **predição de falhas em máquinas industriais** do setor metal-mecânico, desenvolvido de forma independente. O objetivo é identificar, com base em dados de sensores, se uma máquina está em risco de falha antes que ela ocorra.
 
+O projeto tem duas partes complementares: os **notebooks de análise e modelagem** e uma **API REST em produção** que serve o modelo treinado.
+
 ---
 
 ## Pipeline implementado
 
 ```
-Dataset → Análise Exploratória → Pré-processamento → Modelagem → Avaliação
+Dataset → Análise Exploratória → Pré-processamento → Modelagem → Avaliação → API
 ```
 
-### Etapa 1 — Análise Exploratória
+### Etapa 1 — Análise Exploratória (`analise_exploratoria.ipynb`)
 - Distribuição dos tipos de falha
 - Análise comparativa entre grupos (falha por calor, outras falhas, sem falha)
 - Histogramas, boxplots e matrizes de correlação por tipo de falha
@@ -34,7 +35,7 @@ Dataset → Análise Exploratória → Pré-processamento → Modelagem → Aval
 - Balanceamento de classes com **SMOTE**
 - Normalização com **StandardScaler**
 
-### Etapa 3 — Modelagem
+### Etapa 3 — Modelagem (`pipeline_ml.ipynb`)
 Quatro modelos treinados com **Grid Search + validação cruzada estratificada (3-fold)**:
 - Decision Tree
 - Random Forest
@@ -61,6 +62,43 @@ Quatro modelos treinados com **Grid Search + validação cruzada estratificada (
 
 ---
 
+## API REST
+
+O modelo treinado está servido via **FastAPI**, com deploy público no Railway.
+
+**Base URL:** `https://machine-failure-prediction-production.up.railway.app`
+**Documentação interativa:** [`/docs`](https://machine-failure-prediction-production.up.railway.app/docs)
+
+### Endpoints
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/` | Informações e métricas do modelo |
+| `GET` | `/health` | Status da API |
+| `POST` | `/predict` | Predição individual |
+| `POST` | `/predict/batch` | Predição em lote |
+
+### Parâmetros de entrada
+
+| Campo | Tipo | Intervalo | Descrição |
+|---|---|---|---|
+| `Temperatura Ar [K]` | float | 290 – 320 | Temperatura do ar em Kelvin |
+| `Temperatura Processo [K]` | float | 300 – 320 | Temperatura do processo em Kelvin |
+| `Velocidade Rotacao [rpm]` | float | 1000 – 3000 | Rotações por minuto |
+| `Torque [Nm]` | float | 0 – 100 | Torque em Newton-metro |
+| `Desgaste Ferramenta [min]` | float | 0 – 300 | Desgaste acumulado da ferramenta |
+| `Tipo` | string | L, M ou H | Categoria do produto |
+
+### Níveis de risco retornados
+
+| `probability_failure` | `risk_level` | Significado |
+|---|---|---|
+| < 0.30 | `LOW` | Máquina operando normalmente |
+| 0.30 – 0.60 | `MEDIUM` | Atenção: risco moderado de falha |
+| > 0.60 | `HIGH` | Alerta: alto risco — manutenção recomendada |
+
+---
+
 ## Dataset
 
 - **Fonte:** Dataset de manutenção preditiva industrial
@@ -71,27 +109,61 @@ Quatro modelos treinados com **Grid Search + validação cruzada estratificada (
 
 ---
 
-## Tecnologias
+## Estrutura do projeto
 
-```python
-pandas · numpy · matplotlib · seaborn    # Manipulação e visualização de dados
-scikit-learn                             # Modelos ML, GridSearchCV, métricas
-imbalanced-learn                         # SMOTE
+```
+MachineFailure/
+├── api/
+│   ├── main.py          ← endpoints FastAPI
+│   ├── model.py         ← treino e serialização do modelo
+│   └── schemas.py       ← validação de entrada/saída (Pydantic)
+├── model/
+│   ├── model.pkl        ← Random Forest treinado
+│   ├── scaler.pkl       ← StandardScaler
+│   └── metadata.pkl     ← métricas e configurações
+├── analise_exploratoria.ipynb   ← EDA e análise dos padrões de falha
+├── pipeline_ml.ipynb            ← pré-processamento, modelagem e avaliação
+├── manutencao_preditiva.csv
+└── requirements_api.txt
 ```
 
 ---
 
 ## Como executar
 
-Os notebooks foram desenvolvidos no **Google Colab**:
+### Notebooks (Google Colab — recomendado)
 
 1. Faça upload do arquivo `manutencao_preditiva.csv`
-2. Execute `Projeto_predição.ipynb` para a análise exploratória
-3. Execute `Relatório_Final.ipynb` para o pipeline completo de ML
+2. Execute `analise_exploratoria.ipynb` para explorar os padrões de falha
+3. Execute `pipeline_ml.ipynb` para o pipeline completo de ML
 
 ```bash
-# Se quiser rodar localmente:
+# Se preferir rodar localmente:
 pip install pandas numpy matplotlib seaborn scikit-learn imbalanced-learn
+```
+
+### API localmente
+
+```bash
+# 1. Instalar dependências
+pip install -r requirements_api.txt
+
+# 2. Treinar o modelo (gera os arquivos em model/)
+python api/model.py
+
+# 3. Subir a API
+uvicorn api.main:app --reload
+```
+
+A API fica disponível em `http://127.0.0.1:8000` — acesse `/docs` para a documentação interativa.
+
+---
+
+## Tecnologias
+
+```
+notebooks   pandas · numpy · matplotlib · seaborn · scikit-learn · imbalanced-learn
+api         FastAPI · Pydantic · Uvicorn · Docker · Railway
 ```
 
 ---
@@ -103,7 +175,7 @@ Este projeto é o **ponto de partida** de uma pesquisa acadêmica que culminou e
 O artigo resultante:
 
 > Araujo, S. A., Bomfim, S. L., et al. *Integration of Data Analytics and Data Mining for Machine Failure Mitigation and Decision Support in Metal–Mechanical Industry.* **Logistics**, Vol. 9, n. 3, Art. 109, MDPI, 2025.
-> 🔗 [doi.org/10.3390/logistics9030109](https://doi.org/10.3390/logistics9030109)
+> [doi.org/10.3390/logistics9030109](https://doi.org/10.3390/logistics9030109)
 
 Apesar da origem comum, **este repositório não é o código do artigo**. A pesquisa formal seguiu um protocolo diferente, com mais autores e escolhas metodológicas distintas:
 
@@ -114,12 +186,12 @@ Apesar da origem comum, **este repositório não é o código do artigo**. A pes
 | **Melhor modelo** | Random Forest (97.54%) | Decision Tree (82.1%) |
 | **Metodologia** | Iterativa, exploratória | Protocolo formal de pesquisa |
 
-Contribuí no artigo como co-autor (implementação Python e visualizações), mas o código deste repositório foi desenvolvido de forma independente, antes e com diferenças em relação ao trabalho final publicado.
+Contribuí no artigo como co-autor nas partes de implementação Python e visualizações, mas o código deste repositório foi desenvolvido de forma independente, com diferenças em relação ao trabalho final publicado.
 
 ---
 
 ## Autor
 
 **Silas Luiz Bom Fim**
-- 💼 [LinkedIn](https://www.linkedin.com/in/silas-luiz-bom-fim-96a448176)
-- 🐙 [GitHub](https://github.com/silasluiz96-alt)
+- [LinkedIn](https://www.linkedin.com/in/silas-luiz-bom-fim-96a448176)
+- [GitHub](https://github.com/silasluiz96-alt)
