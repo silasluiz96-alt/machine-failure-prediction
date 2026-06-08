@@ -224,6 +224,32 @@ Resposta:
 
 ---
 
+## Por que o limiar de alerta é 10%?
+
+A escolha de 10% como ponto de entrada para o nível MEDIUM não foi arbitrária. Foi testada contra outros limiares no conjunto de teste real (2.861 máquinas, proporção 97/3):
+
+| Limiar | Recall | Precision | Alertas emitidos | Falhas perdidas |
+|---|---|---|---|---|
+| 5% | 100,0% | 12,1% | 655 | 0 |
+| **10%** | **100,0%** | **16,6%** | **476** | **0** ← escolhido |
+| 20% | 100,0% | 25,3% | 312 | 0 |
+| 30% | 100,0% | 32,0% | 247 | 0 |
+| 40% | 98,7% | 38,4% | 203 | 1 |
+| 50% | 97,5% | 44,5% | 173 | 2 |
+
+**Leitura da tabela:**
+- **Recall** = de todas as falhas reais, quantas o modelo detectou
+- **Precision** = de todos os alertas emitidos, quantos eram falhas de verdade
+- **Falhas perdidas** = o número mais crítico — falhas que passaram sem alerta
+
+**Por que 10% e não 30% ou 50%?**
+
+No contexto de manutenção industrial, o custo de **perder uma falha real** (parada não planejada, dano ao equipamento, risco à segurança) é muito maior do que o custo de um **alarme falso** (inspeção desnecessária). Por isso o limiar foi definido no ponto mais sensível que ainda mantém recall de 100% — garantindo que **nenhuma falha real escapa sem alerta**.
+
+O limiar de 10% não é o ponto de "provável falha" — é o ponto de "atenção, monitorar mais de perto". A escala LOW → MEDIUM → HIGH → CRITICAL traduz isso em ações graduais.
+
+---
+
 ## Pipeline do modelo
 
 1. Remoção de outliers pelo método **IQR**
