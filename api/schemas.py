@@ -54,3 +54,11 @@ class ModelInfo(BaseModel):
 class HealthCheck(BaseModel):
     status: str
     model_loaded: bool
+
+
+class ModelMetrics(BaseModel):
+    accuracy: float = Field(..., description="Percentual de acertos do modelo no conjunto de teste")
+    f1: float = Field(..., description="F1-Score — equilíbrio entre precisão e recall")
+    roc_auc: float = Field(..., description="Área sob a curva ROC — capacidade discriminativa do modelo")
+    model: str = Field(..., description="Algoritmo utilizado")
+    trees: int = Field(..., description="Número de árvores de decisão no Random Forest")

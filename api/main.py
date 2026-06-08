@@ -22,6 +22,7 @@ from api.schemas import (
     HealthCheck,
     MachineInput,
     ModelInfo,
+    ModelMetrics,
     PredictionExplainOutput,
     PredictionOutput,
 )
@@ -208,3 +209,28 @@ def predict_explain(machine: MachineInput):
     - **importance**: valor entre 0 e 1 — quanto maior, mais esse sensor influenciou
     """
     return _predict_explain(machine)
+
+
+@app.get("/metrics", response_model=ModelMetrics, tags=["Info"])
+def get_metrics():
+    """
+    Retorna as métricas de desempenho do modelo treinado.
+
+    - **accuracy**: percentual de acertos no conjunto de teste
+    - **f1**: equilíbrio entre precisão e recall
+    - **roc_auc**: capacidade do modelo de separar falha de não-falha
+    - **model**: algoritmo utilizado
+    - **trees**: número de árvores de decisão
+    """
+    if _meta is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Modelo não carregado.",
+        )
+    return ModelMetrics(
+        accuracy=_meta["accuracy"],
+        f1=_meta["f1"],
+        roc_auc=_meta["roc_auc"],
+        model="Random Forest",
+        trees=100,
+    )
