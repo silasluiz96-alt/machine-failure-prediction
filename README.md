@@ -160,6 +160,12 @@ A API fica disponível em `http://127.0.0.1:8000` — acesse `/docs` para a docu
 
 ---
 
+## Fluxo de contribuição
+
+Este repositório segue um acordo de boas práticas baseado na trilha [GitHub Copilot & Agentic AI in the SDLC](https://learn.microsoft.com/en-us/training/) da Microsoft. Toda mudança entra via **Pull Request**, revisada e aprovada antes do merge no `main`. A branch principal está protegida — push direto não é permitido.
+
+---
+
 ## Tecnologias
 
 ```
