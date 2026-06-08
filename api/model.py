@@ -14,7 +14,7 @@ from pathlib import Path
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, precision_score, recall_score, confusion_matrix
 from imblearn.over_sampling import SMOTE
 
 # Caminhos
@@ -116,10 +116,16 @@ def train_and_save():
     acc = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
     auc = roc_auc_score(y_test, y_proba)
+    prec = precision_score(y_test, y_pred)
+    rec = recall_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred).tolist()  # [[TN, FP], [FN, TP]]
 
-    print(f"\n      Accuracy : {acc:.4f}")
-    print(f"      F1-Score : {f1:.4f}")
-    print(f"      ROC-AUC  : {auc:.4f}")
+    print(f"\n      Accuracy  : {acc:.4f}")
+    print(f"      Precision : {prec:.4f}")
+    print(f"      Recall    : {rec:.4f}")
+    print(f"      F1-Score  : {f1:.4f}")
+    print(f"      ROC-AUC   : {auc:.4f}")
+    print(f"      Matriz de confusão: TN={cm[0][0]} | FP={cm[0][1]} | FN={cm[1][0]} | TP={cm[1][1]}")
 
     # Salvar
     MODEL_DIR.mkdir(exist_ok=True)
@@ -128,8 +134,11 @@ def train_and_save():
     joblib.dump(
         {
             "accuracy": round(acc, 4),
+            "precision": round(prec, 4),
+            "recall": round(rec, 4),
             "f1": round(f1, 4),
             "roc_auc": round(auc, 4),
+            "confusion_matrix": cm,  # [[TN, FP], [FN, TP]]
             "features": FEATURES,
             "tipo_map": TIPO_MAP,
             "version": "1.0.0",

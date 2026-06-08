@@ -18,6 +18,7 @@ from fastapi import FastAPI, HTTPException
 from api.schemas import (
     BatchInput,
     BatchOutput,
+    ConfusionMatrix,
     FactorItem,
     HealthCheck,
     MachineInput,
@@ -229,10 +230,19 @@ def get_metrics():
             status_code=503,
             detail="Modelo não carregado.",
         )
+    cm_raw = _meta.get("confusion_matrix", [[0, 0], [0, 0]])
     return ModelMetrics(
         accuracy=_meta["accuracy"],
+        precision=_meta.get("precision", 0.0),
+        recall=_meta.get("recall", 0.0),
         f1=_meta["f1"],
         roc_auc=_meta["roc_auc"],
         model="Random Forest",
         trees=100,
+        confusion_matrix=ConfusionMatrix(
+            true_negative=cm_raw[0][0],
+            false_positive=cm_raw[0][1],
+            false_negative=cm_raw[1][0],
+            true_positive=cm_raw[1][1],
+        ),
     )

@@ -56,9 +56,19 @@ class HealthCheck(BaseModel):
     model_loaded: bool
 
 
+class ConfusionMatrix(BaseModel):
+    true_negative: int = Field(..., description="Máquinas normais identificadas corretamente")
+    false_positive: int = Field(..., description="Máquinas normais classificadas como falha (alarme falso)")
+    false_negative: int = Field(..., description="Falhas reais que o modelo não detectou (mais crítico)")
+    true_positive: int = Field(..., description="Falhas reais detectadas corretamente")
+
+
 class ModelMetrics(BaseModel):
     accuracy: float = Field(..., description="Percentual de acertos do modelo no conjunto de teste")
+    precision: float = Field(..., description="Dos alertas emitidos, quantos eram falhas reais")
+    recall: float = Field(..., description="Das falhas reais, quantas o modelo detectou")
     f1: float = Field(..., description="F1-Score — equilíbrio entre precisão e recall")
     roc_auc: float = Field(..., description="Área sob a curva ROC — capacidade discriminativa do modelo")
     model: str = Field(..., description="Algoritmo utilizado")
     trees: int = Field(..., description="Número de árvores de decisão no Random Forest")
+    confusion_matrix: ConfusionMatrix = Field(..., description="Distribuição dos acertos e erros no conjunto de teste")
