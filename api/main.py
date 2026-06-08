@@ -18,9 +18,11 @@ from fastapi import FastAPI, HTTPException
 from api.schemas import (
     BatchInput,
     BatchOutput,
+    FactorItem,
     HealthCheck,
     MachineInput,
     ModelInfo,
+    PredictionExplainOutput,
     PredictionOutput,
 )
 from api.model import load_artifacts, prepare_input, train_and_save, MODEL_PATH, FEATURES
@@ -95,6 +97,47 @@ def _predict_single(machine: MachineInput) -> PredictionOutput:
     )
 
 
+def _predict_explain(machine: MachineInput) -> PredictionExplainOutput:
+    model, scaler, _ = _get_artifacts()
+    if model is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Modelo não carregado. Execute 'python api/model.py' primeiro.",
+        )
+
+    data = {
+        "temperatura_ar": machine.temperatura_ar,
+        "temperatura_processo": machine.temperatura_processo,
+        "velocidade_rotacao": machine.velocidade_rotacao,
+        "torque": machine.torque,
+        "desgaste_ferramenta": machine.desgaste_ferramenta,
+        "tipo": machine.tipo,
+    }
+
+    X = prepare_input(data)
+    X_scaled = scaler.transform(X)
+
+    prediction = int(model.predict(X_scaled)[0])
+    probability = float(model.predict_proba(X_scaled)[0][1])
+    risk_level, message = _classify_risk(probability)
+
+    # Pega o peso de cada sensor dentro do Random Forest e ordena do maior pro menor
+    importances = model.feature_importances_
+    factors = sorted(
+        [FactorItem(feature=f, importance=round(float(i), 4)) for f, i in zip(FEATURES, importances)],
+        key=lambda x: x.importance,
+        reverse=True,
+    )
+
+    return PredictionExplainOutput(
+        prediction=prediction,
+        probability_failure=round(probability, 4),
+        risk_level=risk_level,
+        message=message,
+        top_factors=factors[:3],
+    )
+
+
 @app.get("/", response_model=ModelInfo, tags=["Info"])
 def get_model_info():
     """Retorna informações sobre o modelo treinado."""
@@ -154,3 +197,14 @@ def predict_batch(batch: BatchInput):
         total=len(predictions),
         failures_detected=failures,
     )
+
+
+@app.post("/predict/explain", response_model=PredictionExplainOutput, tags=["Predição"])
+def predict_explain(machine: MachineInput):
+    """
+    Retorna a predição de falha com explicação dos fatores que mais influenciaram a decisão.
+
+    - **top_factors**: os 3 sensores que mais pesaram na decisão do modelo
+    - **importance**: valor entre 0 e 1 — quanto maior, mais esse sensor influenciou
+    """
+    return _predict_explain(machine)

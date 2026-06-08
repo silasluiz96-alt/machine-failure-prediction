@@ -20,6 +20,19 @@ class PredictionOutput(BaseModel):
     message: str
 
 
+class FactorItem(BaseModel):
+    feature: str = Field(..., description="Nome do sensor/variável")
+    importance: float = Field(..., description="Peso desse fator na decisão (0 a 1)")
+
+
+class PredictionExplainOutput(BaseModel):
+    prediction: int = Field(..., description="0 = normal, 1 = falha")
+    probability_failure: float = Field(..., description="Probabilidade de falha (0 a 1)")
+    risk_level: Literal["LOW", "MEDIUM", "HIGH"]
+    message: str
+    top_factors: List[FactorItem] = Field(..., description="Fatores que mais influenciaram a decisão")
+
+
 class BatchInput(BaseModel):
     machines: List[MachineInput]
 
