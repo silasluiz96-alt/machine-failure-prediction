@@ -93,9 +93,10 @@ O modelo treinado está servido via **FastAPI**, com deploy público no Railway.
 
 | `probability_failure` | `risk_level` | Significado |
 |---|---|---|
-| < 0.30 | `LOW` | Máquina operando normalmente |
-| 0.30 – 0.60 | `MEDIUM` | Atenção: risco moderado de falha |
-| > 0.60 | `HIGH` | Alerta: alto risco — manutenção recomendada |
+| < 10% | `LOW` | Máquina operando normalmente |
+| 10% – 30% | `MEDIUM` | Monitorar: probabilidade de falha em crescimento |
+| 30% – 60% | `HIGH` | Agendar manutenção preventiva imediatamente |
+| > 60% | `CRITICAL` | Parar a máquina — alto risco de falha iminente |
 
 ---
 

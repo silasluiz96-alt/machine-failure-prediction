@@ -6,7 +6,6 @@ Execute diretamente:
     python api/model.py
 """
 
-import os
 import joblib
 import numpy as np
 import pandas as pd
@@ -202,10 +201,11 @@ def load_artifacts():
     return model, scaler, meta
 
 
-def prepare_input(data: dict) -> np.ndarray:
+def prepare_input(data: dict, tipo_map: dict = None) -> np.ndarray:
     """Converte o dict de entrada da API em array pronto para predição."""
-    _, _, meta = load_artifacts()
-    tipo_map = meta["tipo_map"]
+    if tipo_map is None:
+        _, _, meta = load_artifacts()
+        tipo_map = meta["tipo_map"]
     row = [
         data["temperatura_ar"],
         data["temperatura_processo"],

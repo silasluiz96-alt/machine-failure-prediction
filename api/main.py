@@ -71,7 +71,7 @@ def _classify_risk(probability: float) -> Tuple[str, str]:
 
 
 def _predict_single(machine: MachineInput) -> PredictionOutput:
-    model, scaler, _ = _get_artifacts()
+    model, scaler, meta = _get_artifacts()
     if model is None:
         raise HTTPException(
             status_code=503,
@@ -87,7 +87,7 @@ def _predict_single(machine: MachineInput) -> PredictionOutput:
         "tipo": machine.tipo,
     }
 
-    X = prepare_input(data)
+    X = prepare_input(data, tipo_map=meta["tipo_map"])
     X_scaled = scaler.transform(X)
 
     prediction = int(model.predict(X_scaled)[0])
@@ -103,7 +103,7 @@ def _predict_single(machine: MachineInput) -> PredictionOutput:
 
 
 def _predict_explain(machine: MachineInput) -> PredictionExplainOutput:
-    model, scaler, _ = _get_artifacts()
+    model, scaler, meta = _get_artifacts()
     if model is None:
         raise HTTPException(
             status_code=503,
@@ -119,7 +119,7 @@ def _predict_explain(machine: MachineInput) -> PredictionExplainOutput:
         "tipo": machine.tipo,
     }
 
-    X = prepare_input(data)
+    X = prepare_input(data, tipo_map=meta["tipo_map"])
     X_scaled = scaler.transform(X)
 
     prediction = int(model.predict(X_scaled)[0])
@@ -180,7 +180,7 @@ def predict(machine: MachineInput):
 
     - **prediction**: 0 = normal, 1 = falha
     - **probability_failure**: probabilidade de falha (0 a 1)
-    - **risk_level**: LOW / MEDIUM / HIGH
+    - **risk_level**: LOW / MEDIUM / HIGH / CRITICAL
     - **message**: mensagem explicativa
     """
     return _predict_single(machine)
