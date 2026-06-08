@@ -234,6 +234,85 @@ Resposta:
 
 ---
 
+## Exemplos de uso
+
+### Terminal (curl)
+
+```bash
+# Predição individual
+curl -X POST https://machine-failure-prediction-production.up.railway.app/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Temperatura Ar [K]": 310,
+    "Temperatura Processo [K]": 315,
+    "Velocidade Rotacao [rpm]": 1200,
+    "Torque [Nm]": 90,
+    "Desgaste Ferramenta [min]": 280,
+    "Tipo": "L"
+  }'
+
+# Verificar status
+curl https://machine-failure-prediction-production.up.railway.app/health
+
+# Ver métricas do modelo
+curl https://machine-failure-prediction-production.up.railway.app/metrics
+```
+
+---
+
+### Python
+
+```python
+import requests
+
+BASE_URL = "https://machine-failure-prediction-production.up.railway.app"
+
+# Dados da máquina a ser avaliada
+maquina = {
+    "Temperatura Ar [K]": 310,
+    "Temperatura Processo [K]": 315,
+    "Velocidade Rotacao [rpm]": 1200,
+    "Torque [Nm]": 90,
+    "Desgaste Ferramenta [min]": 280,
+    "Tipo": "L"
+}
+
+# Predição simples
+resposta = requests.post(f"{BASE_URL}/predict", json=maquina)
+resultado = resposta.json()
+print(f"Risco: {resultado['risk_level']} ({resultado['probability_failure']*100:.1f}%)")
+print(f"Mensagem: {resultado['message']}")
+
+# Predição com explicação
+resposta = requests.post(f"{BASE_URL}/predict/explain", json=maquina)
+resultado = resposta.json()
+print("\nFatores que mais influenciaram:")
+for fator in resultado["top_factors"]:
+    print(f"  {fator['feature']}: {fator['importance']:.4f}")
+```
+
+Saída esperada:
+```
+Risco: HIGH (37.0%)
+Mensagem: Agendar manutenção preventiva imediatamente
+
+Fatores que mais influenciaram:
+  Torque [Nm]: 0.2593
+  Desgaste Ferramenta [min]: 0.2577
+  Velocidade Rotacao [rpm]: 0.2499
+```
+
+---
+
+### Rodar os testes automatizados
+
+```bash
+pip install -r requirements_test.txt
+pytest tests/ -v
+```
+
+---
+
 ## Como rodar localmente
 
 ```bash
