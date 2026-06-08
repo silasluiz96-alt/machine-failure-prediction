@@ -58,12 +58,14 @@ app = FastAPI(
 
 
 def _classify_risk(probability: float) -> Tuple[str, str]:
-    if probability < 0.3:
+    if probability < 0.10:
         return "LOW", "Máquina operando normalmente"
-    elif probability <= 0.6:
-        return "MEDIUM", "Atenção: risco moderado de falha"
+    elif probability < 0.30:
+        return "MEDIUM", "Monitorar: probabilidade de falha em crescimento"
+    elif probability < 0.60:
+        return "HIGH", "Agendar manutenção preventiva imediatamente"
     else:
-        return "HIGH", "Alerta: alto risco de falha — manutenção recomendada"
+        return "CRITICAL", "Parar a máquina — alto risco de falha iminente"
 
 
 def _predict_single(machine: MachineInput) -> PredictionOutput:
@@ -191,7 +193,7 @@ def predict_batch(batch: BatchInput):
         raise HTTPException(status_code=422, detail="A lista de máquinas não pode ser vazia.")
 
     predictions = [_predict_single(m) for m in batch.machines]
-    failures = sum(1 for p in predictions if p.prediction == 1)
+    failures = sum(1 for p in predictions if p.probability_failure >= 0.10)
 
     return BatchOutput(
         predictions=predictions,
