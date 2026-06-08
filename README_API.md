@@ -339,6 +339,19 @@ pytest tests/ -v
 
 ---
 
+## Monitoramento de drift
+
+Modelos em produção degradam com o tempo à medida que o mundo real muda. Este projeto inclui um plano de monitoramento e um script de detecção:
+
+- **Plano completo:** [`DRIFT_MONITORING.md`](DRIFT_MONITORING.md) — o que monitorar, quando retreinar, como agir
+- **Script de detecção:** `monitorar_drift.py` — compara a distribuição de novos dados com o treinamento e sinaliza desvios acima de 15%
+
+```bash
+python monitorar_drift.py
+```
+
+---
+
 ## Como rodar localmente
 
 ```bash
