@@ -63,12 +63,21 @@ class ConfusionMatrix(BaseModel):
     true_positive: int = Field(..., description="Falhas reais detectadas corretamente")
 
 
-class ModelMetrics(BaseModel):
-    accuracy: float = Field(..., description="Percentual de acertos do modelo no conjunto de teste")
+class ScenarioMetrics(BaseModel):
+    accuracy: float = Field(..., description="Percentual de acertos no conjunto de teste")
     precision: float = Field(..., description="Dos alertas emitidos, quantos eram falhas reais")
     recall: float = Field(..., description="Das falhas reais, quantas o modelo detectou")
-    f1: float = Field(..., description="F1-Score — equilíbrio entre precisão e recall")
-    roc_auc: float = Field(..., description="Área sob a curva ROC — capacidade discriminativa do modelo")
+    f1: float = Field(..., description="Equilíbrio entre precision e recall")
+    roc_auc: float = Field(..., description="Capacidade de separar falha de máquina normal")
+    confusion_matrix: ConfusionMatrix = Field(..., description="Distribuição dos acertos e erros")
+
+
+class ModelMetrics(BaseModel):
     model: str = Field(..., description="Algoritmo utilizado")
     trees: int = Field(..., description="Número de árvores de decisão no Random Forest")
-    confusion_matrix: ConfusionMatrix = Field(..., description="Distribuição dos acertos e erros no conjunto de teste")
+    laboratorio: ScenarioMetrics = Field(
+        ..., description="Métricas no cenário balanceado (50% falhas / 50% normal) — como o modelo aprende"
+    )
+    mundo_real: ScenarioMetrics = Field(
+        ..., description="Métricas na proporção original do dataset (97% normal / 3% falhas) — como o modelo se comporta em produção"
+    )

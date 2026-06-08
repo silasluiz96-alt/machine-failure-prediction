@@ -26,6 +26,7 @@ from api.schemas import (
     ModelMetrics,
     PredictionExplainOutput,
     PredictionOutput,
+    ScenarioMetrics,
 )
 from api.model import load_artifacts, prepare_input, train_and_save, MODEL_PATH, FEATURES
 
@@ -230,19 +231,26 @@ def get_metrics():
             status_code=503,
             detail="Modelo não carregado.",
         )
-    cm_raw = _meta.get("confusion_matrix", [[0, 0], [0, 0]])
+    def _build_scenario(prefix: str) -> ScenarioMetrics:
+        key = lambda k: f"{prefix}{k}" if prefix else k  # noqa
+        cm_raw = _meta.get(key("confusion_matrix"), [[0, 0], [0, 0]])
+        return ScenarioMetrics(
+            accuracy=_meta.get(key("accuracy"), 0.0),
+            precision=_meta.get(key("precision"), 0.0),
+            recall=_meta.get(key("recall"), 0.0),
+            f1=_meta.get(key("f1"), 0.0),
+            roc_auc=_meta.get(key("roc_auc"), 0.0),
+            confusion_matrix=ConfusionMatrix(
+                true_negative=cm_raw[0][0],
+                false_positive=cm_raw[0][1],
+                false_negative=cm_raw[1][0],
+                true_positive=cm_raw[1][1],
+            ),
+        )
+
     return ModelMetrics(
-        accuracy=_meta["accuracy"],
-        precision=_meta.get("precision", 0.0),
-        recall=_meta.get("recall", 0.0),
-        f1=_meta["f1"],
-        roc_auc=_meta["roc_auc"],
         model="Random Forest",
         trees=100,
-        confusion_matrix=ConfusionMatrix(
-            true_negative=cm_raw[0][0],
-            false_positive=cm_raw[0][1],
-            false_negative=cm_raw[1][0],
-            true_positive=cm_raw[1][1],
-        ),
+        laboratorio=_build_scenario(""),
+        mundo_real=_build_scenario("real_"),
     )

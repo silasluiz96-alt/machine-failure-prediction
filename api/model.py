@@ -110,7 +110,7 @@ def train_and_save():
     )
     rf.fit(X_train_s, y_train)
 
-    # Avaliação
+    # Avaliação — cenário laboratório (dados balanceados 50/50)
     y_pred = rf.predict(X_test_s)
     y_proba = rf.predict_proba(X_test_s)[:, 1]
     acc = accuracy_score(y_test, y_pred)
@@ -118,14 +118,40 @@ def train_and_save():
     auc = roc_auc_score(y_test, y_proba)
     prec = precision_score(y_test, y_pred)
     rec = recall_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred).tolist()  # [[TN, FP], [FN, TP]]
+    cm = confusion_matrix(y_test, y_pred).tolist()
 
-    print(f"\n      Accuracy  : {acc:.4f}")
+    print(f"\n  [Cenario: laboratorio — balanceado 50/50]")
+    print(f"      Accuracy  : {acc:.4f}")
     print(f"      Precision : {prec:.4f}")
     print(f"      Recall    : {rec:.4f}")
     print(f"      F1-Score  : {f1:.4f}")
     print(f"      ROC-AUC   : {auc:.4f}")
-    print(f"      Matriz de confusão: TN={cm[0][0]} | FP={cm[0][1]} | FN={cm[1][0]} | TP={cm[1][1]}")
+    print(f"      Matriz: TN={cm[0][0]} | FP={cm[0][1]} | FN={cm[1][0]} | TP={cm[1][1]}")
+
+    # Avaliação — cenário mundo real (dados originais sem SMOTE, proporção 97/3)
+    print(f"\n  [Cenario: mundo real — proporcao original 97/3]")
+    X_real = df_clean[FEATURES]
+    y_real = df_clean[TARGET]
+    _, X_test_real, _, y_test_real = train_test_split(
+        X_real, y_real, test_size=0.30, random_state=42, stratify=y_real
+    )
+    X_test_real_s = scaler.transform(X_test_real)
+    y_pred_real = rf.predict(X_test_real_s)
+    y_proba_real = rf.predict_proba(X_test_real_s)[:, 1]
+
+    acc_r  = accuracy_score(y_test_real, y_pred_real)
+    prec_r = precision_score(y_test_real, y_pred_real, zero_division=0)
+    rec_r  = recall_score(y_test_real, y_pred_real, zero_division=0)
+    f1_r   = f1_score(y_test_real, y_pred_real, zero_division=0)
+    auc_r  = roc_auc_score(y_test_real, y_proba_real)
+    cm_r   = confusion_matrix(y_test_real, y_pred_real).tolist()
+
+    print(f"      Accuracy  : {acc_r:.4f}")
+    print(f"      Precision : {prec_r:.4f}")
+    print(f"      Recall    : {rec_r:.4f}")
+    print(f"      F1-Score  : {f1_r:.4f}")
+    print(f"      ROC-AUC   : {auc_r:.4f}")
+    print(f"      Matriz: TN={cm_r[0][0]} | FP={cm_r[0][1]} | FN={cm_r[1][0]} | TP={cm_r[1][1]}")
 
     # Salvar
     MODEL_DIR.mkdir(exist_ok=True)
@@ -133,12 +159,21 @@ def train_and_save():
     joblib.dump(scaler, SCALER_PATH)
     joblib.dump(
         {
+            # Cenário laboratório (dados balanceados com SMOTE)
             "accuracy": round(acc, 4),
             "precision": round(prec, 4),
             "recall": round(rec, 4),
             "f1": round(f1, 4),
             "roc_auc": round(auc, 4),
-            "confusion_matrix": cm,  # [[TN, FP], [FN, TP]]
+            "confusion_matrix": cm,
+            # Cenário mundo real (proporção original 97/3, sem SMOTE)
+            "real_accuracy": round(acc_r, 4),
+            "real_precision": round(prec_r, 4),
+            "real_recall": round(rec_r, 4),
+            "real_f1": round(f1_r, 4),
+            "real_roc_auc": round(auc_r, 4),
+            "real_confusion_matrix": cm_r,
+            # Configuração
             "features": FEATURES,
             "tipo_map": TIPO_MAP,
             "version": "1.0.0",
