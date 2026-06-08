@@ -168,6 +168,23 @@ api         FastAPI · Pydantic · Uvicorn · Docker · Railway
 
 ---
 
+## API em produção
+
+O projeto evoluiu além dos notebooks — o modelo Random Forest foi servido como uma **API REST em produção**, deployada no Railway.
+
+| Endpoint | Descrição |
+|---|---|
+| `GET /metrics` | Accuracy 97,52% · F1 97,54% · ROC-AUC 99,8% |
+| `POST /predict` | Predição individual com nível de risco |
+| `POST /predict/batch` | Análise de múltiplas máquinas de uma vez |
+| `POST /predict/explain` | Predição + explicação dos fatores decisivos |
+
+A escala de risco segue critérios industriais reais — alerta a partir de **10% de probabilidade de falha**, com quatro níveis: LOW, MEDIUM, HIGH e CRITICAL.
+
+Documentação completa: [README_API.md](README_API.md) · Guia de uso: [GUIA_USO.md](GUIA_USO.md)
+
+---
+
 ## Relação com o artigo publicado
 
 Este projeto é o **ponto de partida** de uma pesquisa acadêmica que culminou em publicação científica. A exploração feita aqui — pipeline de pré-processamento, comparação de modelos, análise de falhas — foi o trabalho inicial que embasou o estudo coletivo conduzido posteriormente na **UFABC**.
