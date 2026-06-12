@@ -162,7 +162,19 @@ A API fica disponível em `http://127.0.0.1:8000` — acesse `/docs` para a docu
 
 ## Fluxo de contribuição
 
-Este repositório segue um acordo de boas práticas baseado na trilha [GitHub Copilot & Agentic AI in the SDLC](https://learn.microsoft.com/en-us/training/) da Microsoft. Toda mudança entra via **Pull Request**, revisada e aprovada antes do merge no `main`. A branch principal está protegida — push direto não é permitido.
+Este repositório segue o modelo de contribuição estruturado — toda mudança entra via **Pull Request**, revisada e aprovada antes do merge no `main`.
+
+```
+branch de feature → Pull Request → revisão humana → aprovação → merge → deploy
+```
+
+A branch `main` está protegida: push direto não é permitido.
+
+**Plano de rollback (contingência):**
+Se um deploy causar problema em produção, o procedimento é:
+1. Abrir o painel do Railway → **Deployments** → selecionar o deploy anterior → **Redeploy**
+2. Identificar o commit problemático no GitHub → abrir PR de reversão com `git revert`
+3. Após aprovação do PR de reversão → merge → Railway faz novo deploy estável
 
 ---
 
