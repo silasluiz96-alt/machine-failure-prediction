@@ -2,7 +2,7 @@
 
 Este guia explica como utilizar a API de predição de falhas em máquinas industriais. Não é necessário conhecimento técnico para seguir os passos — basta acesso ao navegador.
 
-**Link da API:** https://machine-failure-prediction-production.up.railway.app/docs
+**Link da API:** https://machine-failure-prediction-production-22fe.up.railway.app/docs
 
 ---
 
