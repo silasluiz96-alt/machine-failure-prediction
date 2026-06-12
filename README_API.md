@@ -1,8 +1,8 @@
 # Machine Failure Prediction API
 
-[![API Status](https://img.shields.io/badge/API-Online-green)](https://machine-failure-prediction-production.up.railway.app)
+[![API Status](https://img.shields.io/badge/API-Online-green)](https://machine-failure-prediction-production-22fe.up.railway.app)
 
-**Live API:** https://machine-failure-prediction-production.up.railway.app/docs
+**Live API:** https://machine-failure-prediction-production-22fe.up.railway.app/docs
 
 API REST para predição de falhas em máquinas industriais, construída com **FastAPI** e **Random Forest**. Deployada em produção no Railway.
 
@@ -266,7 +266,7 @@ O limiar de 10% não é o ponto de "provável falha" — é o ponto de "atençã
 
 ```bash
 # Predição individual
-curl -X POST https://machine-failure-prediction-production.up.railway.app/predict \
+curl -X POST https://machine-failure-prediction-production-22fe.up.railway.app/predict \
   -H "Content-Type: application/json" \
   -d '{
     "Temperatura Ar [K]": 310,
@@ -278,10 +278,10 @@ curl -X POST https://machine-failure-prediction-production.up.railway.app/predic
   }'
 
 # Verificar status
-curl https://machine-failure-prediction-production.up.railway.app/health
+curl https://machine-failure-prediction-production-22fe.up.railway.app/health
 
 # Ver métricas do modelo
-curl https://machine-failure-prediction-production.up.railway.app/metrics
+curl https://machine-failure-prediction-production-22fe.up.railway.app/metrics
 ```
 
 ---
@@ -291,7 +291,7 @@ curl https://machine-failure-prediction-production.up.railway.app/metrics
 ```python
 import requests
 
-BASE_URL = "https://machine-failure-prediction-production.up.railway.app"
+BASE_URL = "https://machine-failure-prediction-production-22fe.up.railway.app"
 
 # Dados da máquina a ser avaliada
 maquina = {

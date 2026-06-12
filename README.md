@@ -1,8 +1,8 @@
 # Machine Failure Prediction — Precursor Project
 
-[![API Status](https://img.shields.io/badge/API-Online-green)](https://machine-failure-prediction-production.up.railway.app)
+[![API Status](https://img.shields.io/badge/API-Online-green)](https://machine-failure-prediction-production-22fe.up.railway.app)
 
-**Live API:** https://machine-failure-prediction-production.up.railway.app/docs
+**Live API:** https://machine-failure-prediction-production-22fe.up.railway.app/docs
 
 
 > **Este projeto é o precursor direto de um artigo científico publicado.** Desenvolvido individualmente por **Silas Luiz Bom Fim** como exploração independente do tema, ele serviu de base para uma pesquisa acadêmica coletiva que resultou em publicação revisada por pares — mas os dois trabalhos têm autores, metodologias e resultados diferentes. Veja a seção [Relação com o artigo publicado](#relação-com-o-artigo-publicado) para entender as diferenças.
@@ -66,8 +66,8 @@ Quatro modelos treinados com **Grid Search + validação cruzada estratificada (
 
 O modelo treinado está servido via **FastAPI**, com deploy público no Railway.
 
-**Base URL:** `https://machine-failure-prediction-production.up.railway.app`
-**Documentação interativa:** [`/docs`](https://machine-failure-prediction-production.up.railway.app/docs)
+**Base URL:** `https://machine-failure-prediction-production-22fe.up.railway.app`
+**Documentação interativa:** [`/docs`](https://machine-failure-prediction-production-22fe.up.railway.app/docs)
 
 ### Endpoints
 
