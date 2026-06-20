@@ -160,6 +160,65 @@ A API fica disponível em `http://127.0.0.1:8000` — acesse `/docs` para a docu
 
 ---
 
+## Roadmap
+
+### ✅ Fase 1 — Modelagem e API (concluída)
+
+- [x] Análise exploratória dos dados
+- [x] Pipeline de pré-processamento (IQR + SMOTE + StandardScaler)
+- [x] Treinamento e comparação de 4 modelos (Random Forest eleito)
+- [x] Avaliação em dois cenários: laboratório (50/50) e mundo real (97/3)
+- [x] Matriz de confusão e análise de threshold
+- [x] API REST com FastAPI (predict, batch, explain, metrics)
+- [x] Deploy em produção no Railway
+- [x] Documentação completa (README, README_API, GUIA_USO)
+- [x] Testes automatizados com pytest (12 testes)
+- [x] Plano de monitoramento de drift
+
+---
+
+### 🚧 Fase 2 — Interface, Banco de Dados e Relatório (em andamento)
+
+**Etapa 1 — Banco de dados (Supabase)**
+- [x] Schema do banco documentado (`database/schema.sql`)
+- [ ] Projeto criado no Supabase
+- [ ] Integração do FastAPI com o Supabase
+- [ ] Endpoint `GET /history` implementado
+- [ ] Variáveis de ambiente configuradas no Railway
+
+**Etapa 2 — Interface Web**
+- [ ] Formulário de consulta individual (1–2 máquinas)
+- [ ] Resultado visual com badge colorido por nível de risco
+- [ ] Upload de CSV para análise em lote
+- [ ] Tabela de resultados ranqueada por risco
+- [ ] Aba de histórico consumindo `GET /history`
+- [ ] Deploy da interface (GitHub Pages ou Railway)
+
+**Etapa 3 — Relatório PDF**
+- [ ] Botão "Gerar Relatório" após análise em lote
+- [ ] Resumo executivo com distribuição de risco
+- [ ] Tabela ranqueada com recomendações por nível
+- [ ] Histórico de evolução de risco por máquina
+- [ ] Geração no navegador via jsPDF (sem alteração na API)
+
+**Etapa 4 — Polimento e entrega**
+- [ ] README atualizado com link da interface
+- [ ] README_API atualizado com documentação do `/history`
+- [ ] PR de encerramento da Fase 2
+
+---
+
+### 🔮 Fase 3 — Monitoramento Inteligente com LSTM (planejada)
+
+- [ ] Simulação de séries temporais sintéticas com base no dataset
+- [ ] Treinamento do modelo LSTM supervisionado
+- [ ] Novo endpoint `POST /predict/forecast`
+- [ ] Gráfico de tendência temporal na interface
+- [ ] Relatório de prognóstico (horizonte de 7/14/30 dias)
+- [ ] Uso de dados reais acumulados no Supabase para retreino
+
+---
+
 ## Fluxo de contribuição
 
 Este repositório segue o modelo de contribuição estruturado — toda mudança entra via **Pull Request**, revisada e aprovada antes do merge no `main`.
