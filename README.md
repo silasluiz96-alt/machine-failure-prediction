@@ -287,6 +287,10 @@ Contribuí no artigo como co-autor nas partes de implementação Python e visual
 
 ## Autor
 
-**Silas Luiz Bom Fim**
-- [LinkedIn](https://www.linkedin.com/in/silas-luiz-bom-fim-96a448176)
-- [GitHub](https://github.com/silasluiz96-alt)
+**Silas Luiz Bom Fim** — Data Engineer · ML & AI Developer · Python | PL/SQL | LLM | UFABC
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-silas--bom--fim-0077B5?logo=linkedin)](https://www.linkedin.com/in/silas-luiz-bom-fim-96a448176)
+[![GitHub](https://img.shields.io/badge/GitHub-silasluiz96--alt-181717?logo=github)](https://github.com/silasluiz96-alt)
+[![MDPI Logistics](https://img.shields.io/badge/MDPI_Logistics-2025-orange)](https://doi.org/10.3390/logistics9030109)
+
+📄 **Published researcher** — *Machine Failure Prediction using ML for Predictive Maintenance*, Logistics, Vol. 9, Issue 3, Art. 109 · MDPI · 2025 · Open Access → [doi.org/10.3390/logistics9030109](https://doi.org/10.3390/logistics9030109)
