@@ -14,6 +14,7 @@ from typing import Tuple
 
 import numpy as np
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.schemas import (
     BatchInput,
@@ -56,6 +57,13 @@ app = FastAPI(
     description="API para predição de falhas em máquinas industriais usando Random Forest.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 
