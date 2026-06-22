@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machine Failure Prediction</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="header-title">Machine Failure Prediction</h1>
+        <p class="header-subtitle">Sistema de Predição de Falhas Industriais · Random Forest · 97.54% accuracy</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="api-status" id="apiStatus">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Verificando...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="individual">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3"/></svg>
+      Análise Individual
+    </button>
+    <button class="tab" data-tab="lote">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h1.5C5.496 19.5 6 18.996 6 18.375m-3.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m0 0h17.25m0 0c.621 0 1.125.504 1.125 1.125M21 5.625v12.75M21 5.625A1.125 1.125 0 0 0 19.875 4.5h-15.75A1.125 1.125 0 0 0 3 5.625m18 0v1.5c0 .621-.504 1.125-1.125 1.125M3.375 7.5h17.25"/></svg>
+      Análise em Lote
+    </button>
+    <button class="tab tab-disabled" data-tab="historico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+      Histórico
+      <span class="tab-badge">Em breve</span>
+    </button>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- TAB: INDIVIDUAL -->
+    <section class="tab-panel active" id="panel-individual">
+      <div class="panel-grid">
+
+        <!-- FORM -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Dados do Sensor</h2>
+            <p>Insira as leituras atuais da máquina</p>
+          </div>
+          <form id="formIndividual" class="form">
+            <div class="form-grid">
+
+              <div class="field">
+                <label>Temperatura do Ar <span class="unit">K</span></label>
+                <input type="number" name="temperatura_ar" step="0.1" min="290" max="320" placeholder="290 – 320" required />
+              </div>
+
+              <div class="field">
+                <label>Temperatura do Processo <span class="unit">K</span></label>
+                <input type="number" name="temperatura_processo" step="0.1" min="300" max="320" placeholder="300 – 320" required />
+              </div>
+
+              <div class="field">
+                <label>Velocidade de Rotação <span class="unit">rpm</span></label>
+                <input type="number" name="velocidade_rotacao" step="1" min="1000" max="3000" placeholder="1000 – 3000" required />
+              </div>
+
+              <div class="field">
+                <label>Torque <span class="unit">Nm</span></label>
+                <input type="number" name="torque" step="0.1" min="0" max="100" placeholder="0 – 100" required />
+              </div>
+
+              <div class="field">
+                <label>Desgaste da Ferramenta <span class="unit">min</span></label>
+                <input type="number" name="desgaste_ferramenta" step="1" min="0" max="300" placeholder="0 – 300" required />
+              </div>
+
+              <div class="field">
+                <label>Tipo do Produto</label>
+                <select name="tipo" required>
+                  <option value="" disabled selected>Selecionar</option>
+                  <option value="L">L — Low quality</option>
+                  <option value="M">M — Medium quality</option>
+                  <option value="H">H — High quality</option>
+                </select>
+              </div>
+
+            </div>
+
+            <button type="submit" class="btn-primary" id="btnPredict">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+              Analisar Máquina
+            </button>
+          </form>
+        </div>
+
+        <!-- RESULT -->
+        <div class="card result-card" id="resultCard">
+          <div class="result-empty" id="resultEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"/>
+            </svg>
+            <p>O resultado da análise<br/>aparecerá aqui</p>
+          </div>
+          <div class="result-content" id="resultContent" style="display:none">
+            <div class="result-header">
+              <div class="risk-badge" id="riskBadge"></div>
+              <div class="result-meta">
+                <span class="result-label">Nível de Risco</span>
+                <span class="result-value" id="riskLabel"></span>
+              </div>
+            </div>
+            <div class="prob-section">
+              <div class="prob-header">
+                <span>Probabilidade de Falha</span>
+                <span class="prob-value" id="probValue"></span>
+              </div>
+              <div class="prob-bar-track">
+                <div class="prob-bar-fill" id="probBar"></div>
+              </div>
+            </div>
+            <div class="result-message" id="resultMessage"></div>
+            <div class="result-status" id="resultStatus"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB: LOTE -->
+    <section class="tab-panel" id="panel-lote">
+      <div class="card">
+        <div class="card-header">
+          <h2>Análise em Lote</h2>
+          <p>Faça upload de um arquivo CSV com os dados de múltiplas máquinas</p>
+        </div>
+
+        <div class="csv-format">
+          <div class="csv-format-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+            Formato esperado do CSV
+          </div>
+          <code class="csv-example">Temperatura Ar [K],Temperatura Processo [K],Velocidade Rotacao [rpm],Torque [Nm],Desgaste Ferramenta [min],Tipo<br/>300.5,310.2,1500,42.3,120,M<br/>305.1,312.0,2200,38.7,250,H</code>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
+          </svg>
+          <p>Arraste o CSV aqui ou <label for="csvInput" class="upload-link">clique para selecionar</label></p>
+          <p class="upload-hint">Apenas arquivos .csv</p>
+          <input type="file" id="csvInput" accept=".csv" style="display:none" />
+        </div>
+
+        <div id="batchPreview" style="display:none">
+          <div class="preview-header">
+            <span id="previewCount"></span>
+            <button class="btn-ghost" id="btnClearCsv">Limpar</button>
+          </div>
+          <button class="btn-primary" id="btnBatchPredict">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+            Analisar Lote
+          </button>
+        </div>
+
+        <div id="batchResults" style="display:none">
+          <div class="batch-summary" id="batchSummary"></div>
+          <div class="table-wrapper">
+            <table class="results-table" id="resultsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tipo</th>
+                  <th>Temp. Ar</th>
+                  <th>Rotação</th>
+                  <th>Torque</th>
+                  <th>Desgaste</th>
+                  <th>Prob. Falha</th>
+                  <th>Risco</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: HISTÓRICO -->
+    <section class="tab-panel" id="panel-historico">
+      <div class="card card-center">
+        <div class="coming-soon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m0 4.5c0 2.278 3.694 4.125 8.25 4.125s8.25-1.847 8.25-4.125"/>
+          </svg>
+          <h3>Histórico de Predições</h3>
+          <p>Esta aba estará disponível após a integração com o banco de dados (Supabase).<br/>As predições feitas pela API serão armazenadas e consultáveis aqui.</p>
+          <span class="coming-soon-badge">Fase 2 · Etapa 1</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span>Machine Failure Prediction · Silas Luiz Bom Fim</span>
+    <a href="https://machine-failure-prediction-production-22fe.up.railway.app/docs" target="_blank" rel="noopener">
+      API Docs ↗
+    </a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
