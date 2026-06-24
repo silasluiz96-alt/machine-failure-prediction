@@ -1,8 +1,14 @@
 # Machine Failure Prediction — Precursor Project
 
 [![API Status](https://img.shields.io/badge/API-Online-green)](https://machine-failure-prediction-production-22fe.up.railway.app)
+[![Interface](https://img.shields.io/badge/Interface-GitHub%20Pages-blue)](https://silasluiz96-alt.github.io/machine-failure-prediction/)
 
-**Live API:** https://machine-failure-prediction-production-22fe.up.railway.app/docs
+## Acesse o projeto
+
+| | Link | Público-alvo |
+|---|---|---|
+| 🖥️ **Interface visual** | [silasluiz96-alt.github.io/machine-failure-prediction](https://silasluiz96-alt.github.io/machine-failure-prediction/) | Qualquer pessoa — formulário interativo, resultado visual com nível de risco |
+| 📡 **API / Swagger** | [machine-failure-prediction-production-22fe.up.railway.app/docs](https://machine-failure-prediction-production-22fe.up.railway.app/docs) | Desenvolvedores e profissionais de TI |
 
 
 > **Este projeto é o precursor direto de um artigo científico publicado.** Desenvolvido individualmente por **Silas Luiz Bom Fim** como exploração independente do tema, ele serviu de base para uma pesquisa acadêmica coletiva que resultou em publicação revisada por pares — mas os dois trabalhos têm autores, metodologias e resultados diferentes. Veja a seção [Relação com o artigo publicado](#relação-com-o-artigo-publicado) para entender as diferenças.
