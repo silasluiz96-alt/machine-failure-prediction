@@ -193,12 +193,12 @@ A API fica disponível em `http://127.0.0.1:8000` — acesse `/docs` para a docu
 - [ ] Variáveis de ambiente configuradas no Railway
 
 **Etapa 2 — Interface Web**
-- [ ] Formulário de consulta individual (1–2 máquinas)
-- [ ] Resultado visual com badge colorido por nível de risco
-- [ ] Upload de CSV para análise em lote
-- [ ] Tabela de resultados ranqueada por risco
-- [ ] Aba de histórico consumindo `GET /history`
-- [ ] Deploy da interface (GitHub Pages ou Railway)
+- [x] Formulário de consulta individual (1–2 máquinas)
+- [x] Resultado visual com badge colorido por nível de risco
+- [x] Upload de CSV para análise em lote
+- [x] Tabela de resultados ranqueada por risco
+- [ ] Aba de histórico consumindo `GET /history` *(aguarda Etapa 1)*
+- [x] Deploy da interface (GitHub Pages)
 
 **Etapa 3 — Relatório PDF**
 - [ ] Botão "Gerar Relatório" após análise em lote
@@ -208,7 +208,7 @@ A API fica disponível em `http://127.0.0.1:8000` — acesse `/docs` para a docu
 - [ ] Geração no navegador via jsPDF (sem alteração na API)
 
 **Etapa 4 — Polimento e entrega**
-- [ ] README atualizado com link da interface
+- [x] README atualizado com link da interface
 - [ ] README_API atualizado com documentação do `/history`
 - [ ] PR de encerramento da Fase 2
 
